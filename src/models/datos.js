@@ -3,7 +3,7 @@ var Squema = mongoose.Schema;
 
 var datosDigitados = new Squema({
     email:String,
-    contraseña:String
+    password:Number
 });
 
 module.exports = mongoose.model("datos", datosDigitados);
