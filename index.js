@@ -11,7 +11,8 @@ app.set("views", path);
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/CSS"))
 app.use(express.static(__dirname + "/images"))
-var DatoSquema = require("./src/models/datos")
+var DatoSquema = require("./src/models/datos");
+const datos = require("./src/models/datos");
 
 mongoose.connect(
     "mongodb+srv://Laiton785:LaitonMongo1@cluster0.vy8yi.mongodb.net/Base_Login?retryWrites=true&w=majority"
@@ -32,19 +33,36 @@ app.post("/buscar", async function (req, res) {
     var clave = req.body.inpContra
 
     var consultaEmail = await DatoSquema.find({ $and: [{ "email": correo }, { "password": clave }] })
-    //console.log(consultaEmail[0].email+consultaEmail[0].password)
+
     if (consultaEmail == "") {
         res.render('index')
     } else {
-        var dat = consultaEmail[0].email
-        var dat1 = consultaEmail[0].password
-        console.log(consultaEmail)
-
+        var dat = consultaEmail[0].email;
+        var dat1 = consultaEmail[0].password;
         if (dat == correo && dat1 == clave) {
-            res.render('formulario')
+            res.render('formulario', { datos: consultaEmail })
         }
     }
 });
 
+app.post("/editar/:_id", async (req, res) => {
+    var id = req.params._id
+    var busqueda = await DatoSquema.findById(id)
+        busqueda.nombre = req.body.nombre;
+        busqueda.apellido = req.body.apellido;
+        busqueda.usuario = req.body.usuario;
+        busqueda.email = req.body.email;
+        busqueda.direccion = req.body.direccion;
+        busqueda.pais = req.body.selectPais;
+        busqueda.estado = req.body.selectEstado;
+        busqueda.cp = req.body.cp
+        let doc = new DatoSquema(busqueda);
+        await doc.save();
+    console.log(doc);
+});
 
+app.post("/falta/:_id",async(req,res)=>{
+    var consultaEmail = await DatoSquema.findById(req.params._id)
+    res.redirect('/buscar/'+ req.params._id)    
+})
 app.listen(3000);
