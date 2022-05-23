@@ -11,6 +11,8 @@ var datosDigitados = new Squema({
     pais:String,
     estado:String,
     cp:Number,
+    checkEdad:String,
+    terminos:String
 });
 
 module.exports = mongoose.model("datos", datosDigitados);

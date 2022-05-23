@@ -47,6 +47,8 @@ app.post("/buscar", async function (req, res) {
 
 app.post("/editar/:_id", async (req, res) => {
     var id = req.params._id
+    var todo = req.body
+    console.log(todo)
     var busqueda = await DatoSquema.findById(id)
         busqueda.nombre = req.body.nombre;
         busqueda.apellido = req.body.apellido;
@@ -56,13 +58,11 @@ app.post("/editar/:_id", async (req, res) => {
         busqueda.pais = req.body.selectPais;
         busqueda.estado = req.body.selectEstado;
         busqueda.cp = req.body.cp
+        busqueda.checkEdad = req.body.checkEdad
+        busqueda.terminos = req.body.checkTerminos
         let doc = new DatoSquema(busqueda);
         await doc.save();
     console.log(doc);
+    res.render('hola', {datos:doc})
 });
-
-app.post("/falta/:_id",async(req,res)=>{
-    var consultaEmail = await DatoSquema.findById(req.params._id)
-    res.redirect('/buscar/'+ req.params._id)    
-})
 app.listen(3000);
